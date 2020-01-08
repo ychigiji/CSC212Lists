@@ -15,7 +15,7 @@ import me.jjfoley.adt.errors.EmptyListError;
 
 @SuppressWarnings("javadoc")
 public class ChunkyArrayListTest {
-	
+	  
 	/**
 	 * Make a new empty list.
 	 * @return an empty list to be tested.

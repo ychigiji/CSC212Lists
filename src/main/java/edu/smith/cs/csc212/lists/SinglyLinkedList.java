@@ -21,17 +21,31 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 	@Override
 	public T removeFront() {
 		checkNotEmpty();
-		throw new TODOErr();
+		Node<T> removed = this.start;
+		this.start = this.start.next;
+		return removed.value;
 	}
 
 	@Override
 	public T removeBack() {
-		throw new TODOErr();
+		checkNotEmpty();
+		return removeIndex(size()-1);
 	}
 
 	@Override
 	public T removeIndex(int index) {
-		throw new TODOErr();
+		checkNotEmpty();
+		if(this.start.next == null) {
+			return removeFront();
+		}
+		Node<T> current = this.start;
+		for (int i = 0; i < index -1; i++) {
+			current = current.next;
+		}
+		Node<T> removed = current.next;
+		current.next = removed.next;
+		
+		return removed.value;
 	}
 
 	@Override
@@ -41,24 +55,51 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 
 	@Override
 	public void addBack(T item) {
-		throw new TODOErr();
+		if (this.isEmpty()) {
+			this.addFront(item); 
+			return;
+			}
+		
+		for (Node<T> b = this.start; b != null; b = b.next) { if (b.next == null) {
+			b.next = new Node<T>(item, null);
+			return;
+			}
+		}
+		
 	}
-
+	
 	@Override
 	public void addIndex(int index, T item) {
-		throw new TODOErr();
+		int count = 0;
+		if (index==0) {
+			addFront(item);
+			return;
+		}
+		else {
+			for (Node<T> current = this.start; current!=null; current = current.next) {
+				if (count+1==index) {
+					current.next = new Node<T>(item, current.next);
+					return;
+				}
+			count++;
+			}
+		}
+		throw new BadIndexError(index);
 	}
+	
 
 	@Override
 	public T getFront() {
 		checkNotEmpty();
-		throw new TODOErr();
+		return this.start.value;
+		
+		
 	}
 
 	@Override
 	public T getBack() {
 		checkNotEmpty();
-		throw new TODOErr();
+		return getIndex(size()-1);
 	}
 
 	@Override
@@ -76,8 +117,25 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 	@Override
 	public void setIndex(int index, T value) {
 		checkNotEmpty();
-		throw new TODOErr();
-	}
+		int count = 0;
+		if (index==0) {
+			this.start.value = value;
+			return;
+		}
+		else {
+			for (Node<T> current = this.start; current!=null; current = current.next) {
+				if (count==index) {
+					current.value= value;
+					return;
+				}
+			count++;
+			}
+		}
+		throw new BadIndexError(index);
+		}
+		
+
+	
 
 	@Override
 	public int size() {
@@ -108,6 +166,9 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 		 * What value is stored in this node?
 		 */
 		public T value;
+		/** This is the same variable for all Nodes! */ 
+		static int numNodes = 0;
+
 
 		/**
 		 * Create a node with no friends.
@@ -116,6 +177,9 @@ public class SinglyLinkedList<T> extends ListADT<T> {
 		 * @param next - the successor to this node.
 		 */
 		public Node(T value, Node<T> next) {
+			numNodes += 1;
+			if (numNodes > 10000) {
+			throw new RuntimeException("Probably an infinite loop..."); }
 			this.value = value;
 			this.next = next;
 		}
